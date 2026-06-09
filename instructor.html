@@ -282,7 +282,7 @@
       
       if(!obtained || !total || !selectedSub) return;
       
-      // Merge into an obtained/total format text block
+      // Combines fields into standard score fraction layout
       const finalScoreString = `${obtained}/${total}`;
 
       await fetch(`${API_BASE}/submissions/grade`, {
