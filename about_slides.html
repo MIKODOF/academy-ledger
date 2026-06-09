@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Origin - Rishit Passwala</title>
+  <style>
+    :root {
+      --bg-cream: #EFECE6;
+      --card-paper: #FAF8F5;
+      --border-tan: #D9D2C5;
+      --accent-sage: #4A6B53;
+      --ink-clay: #3C352E;
+      --text-muted: #706E6B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body { 
+      background-color: var(--bg-cream); 
+      color: var(--ink-clay); 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      overflow: hidden; 
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .grid-bg { 
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(to right, rgba(140, 133, 123, 0.04) 1px, transparent 1px), 
+        linear-gradient(to bottom, rgba(140, 133, 123, 0.04) 1px, transparent 1px); 
+      background-size: 30px 30px; 
+      z-index: 1;
+    }
+
+    .deck-header {
+      width: 100%;
+      height: 70px;
+      background: var(--card-paper);
+      border-bottom: 2px solid var(--border-tan);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 10;
+    }
+
+    .header-title {
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: var(--accent-sage);
+    }
+
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-control {
+      background: var(--bg-cream);
+      border: 1px solid var(--border-tan);
+      color: var(--ink-clay);
+      padding: 8px 16px;
+      font-size: 11px;
+      font-family: monospace;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s ease;
+    }
+    .btn-control:hover { transform: scale(1.05); background: white; }
+    .btn-control.paused-state { background: #AA6C39; color: white; border-color: #AA6C39; }
+
+    .btn-exit {
+      background: transparent;
+      border: 1px solid var(--border-tan);
+      color: var(--ink-clay);
+      padding: 8px 16px;
+      font-size: 12px;
+      font-family: monospace;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .btn-exit:hover { background: var(--ink-clay); color: var(--card-paper); transform: translateY(-2px); }
+
+    .deck-viewport {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 5;
+      padding: 30px;
+    }
+
+    /* PREMIUM CINEMATIC TRANSITION EFFECT */
+    .slide {
+      position: absolute;
+      width: 95%;
+      max-width: 1200px;
+      min-height: 520px;
+      background: var(--card-paper);
+      border: 1px solid var(--border-tan);
+      border-radius: 12px;
+      padding: 50px 60px;
+      box-shadow: 0 20px 50px rgba(60, 53, 46, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      
+      /* Hidden Initial State */
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateX(80px) scale(0.96);
+      pointer-events: none;
+      
+      /* Physics-based motion ease curve */
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+                  filter 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+                  transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* Active Presentation Entering State */
+    .slide.active {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateX(0px) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Exiting State (Slides out to the left gracefully) */
+    .slide.exit-left {
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateX(-80px) scale(0.96);
+    }
+
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 15px;
+    }
+
+    .interactive-card {
+      background: var(--bg-cream);
+      border: 1px solid var(--border-tan);
+      border-left: 5px solid var(--accent-sage);
+      padding: 20px 24px;
+      border-radius: 6px;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    }
+    .interactive-card:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 16px 32px rgba(74, 107, 83, 0.12);
+    }
+
+    .editorial-tag {
+      font-family: monospace;
+      font-weight: bold;
+      color: var(--accent-sage);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 15px;
+    }
+
+    p { font-size: clamp(15px, 1.5vw, 19px); line-height: 1.55; color: var(--text-muted); max-width: 850px; }
+
+    .floating-gear {
+      position: absolute;
+      right: 60px;
+      top: 60px;
+      width: 120px;
+      height: 120px;
+      border: 2px dashed var(--border-tan);
+      border-radius: 50%;
+      animation: spinning 25s linear infinite;
+      opacity: 0.5;
+    }
+
+    @keyframes spinning { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .badge-frame {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 3px dashed var(--accent-sage);
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.5s ease;
+    }
+    .badge-frame:hover { transform: rotate(45deg) scale(1.08); }
+    .badge-frame img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+
+    .timeline-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 6px; background: var(--border-tan); z-index: 10; }
+    .timeline-bar { height: 100%; width: 0%; background: var(--accent-sage); transition: width 0.1s linear; }
+  </style>
+</head>
+<body class="grid-bg">
+
+  <header class="deck-header">
+    <div class="header-title">SYSTEM ORIGIN // CORE ARCHITECT MANIFEST</div>
+    <div class="controls-group">
+      <button id="playPauseBtn" class="btn-control">⏸ Pause</button>
+      <a href="index.html" class="btn-exit">Return to Hub Portal ↗</a>
+    </div>
+  </header>
+
+  <div class="deck-viewport">
+
+    <div class="slide active">
+      <div class="floating-gear"></div>
+      <span class="editorial-tag">// Project System Blueprint</span>
+      <h1>Rishit Passwala</h1>
+      <p style="font-family: Georgia, serif; font-style: italic; color: var(--accent-sage); margin-bottom: 20px;">
+        Lead System Architect & Core Platform Programmer
+      </p>
+      <div class="interactive-card" style="max-width: 500px;">
+        <p style="font-size: 15px; font-weight: bold; margin-bottom: 5px;">Identity Registry Details:</p>
+        <div style="font-family: monospace; font-size: 14px; color: var(--accent-sage); line-height: 1.6;">
+          • Rank: Grade 9th E <br>
+          • Institution: Zebar School for Children <br>
+          • Engine Version: V1.0.0 (Stable Cloud Deployment)
+        </div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <span class="editorial-tag">// Dev Dossier</span>
+      <h1>Meet the Creator</h1>
+      <p>I am a tech analyst and developer based out of Grade 9-E. Instead of writing basic layouts, my objective with this build was to challenge traditional network barriers and create complex automation tools optimized for everyday environments.</p>
+      <div style="display: flex; gap: 15px; margin-top: 30px;">
+        <div class="interactive-card"><b>Interface Design</b></div>
+        <div class="interactive-card"><b>API Deployment</b></div>
+        <div class="interactive-card"><b>Logic Engineering</b></div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <span class="editorial-tag">// Structural Pipeline</span>
+      <h1>The Full-Stack Grid</h1>
+      <p>This standalone cross-device web app was engineered using completely clean, efficient structural components:</p>
+      <div class="split-layout">
+        <div class="interactive-card"><strong>Node.js & Express API</strong><p style="font-size: 13px; margin-top: 4px; color: var(--text-muted);">Handles routing mechanics and logs runtime operations instantly.</p></div>
+        <div class="interactive-card"><strong>Vanilla DOM Processing</strong><p style="font-size: 13px; margin-top: 4px; color: var(--text-muted);">Provides lightweight, dynamic page adjustments with zero external dependency.</p></div>
+        <div class="interactive-card"><strong>CSS Grid & Elastic Flex</strong><p style="font-size: 13px; margin-top: 4px; color: var(--text-muted);">Ensures full responsiveness across phones, tablets, or master projectors.</p></div>
+        <div class="interactive-card"><strong>Render Cloud Distribution</strong><p style="font-size: 13px; margin-top: 4px; color: var(--text-muted);">Runs 24/7 on global edge networks, meaning your computer never fries.</p></div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <span class="editorial-tag">// Paradigm Shift</span>
+      <h1>Architectural Upgrades</h1>
+      <p>Why build this application? Traditional local networks crash when the host laptop closes. This system features absolute host-decentralization via cloud computing.</p>
+      <div class="interactive-card" style="margin-top: 24px;">
+        <p style="font-size: 16px; color: var(--accent-sage);"><b>Resulting Matrix:</b> Students submit evaluation answers and dispatch doubt tickets straight to cloud memory queues with absolute safety and lightning speed.</p>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="split-layout" style="align-items: center;">
+        <div>
+          <span class="editorial-tag">// Academy Foundation</span>
+          <h1>Zebar School<br>For Children</h1>
+          <p style="margin-top: 10px;">Proudly coded and executed by an active member of the Grade 9-E student body. This project represents the spirit of engineering and digital innovation cultivated inside Zebar School.</p>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+          <div class="badge-frame"><img src="logo.png" alt="Zebar School Logo"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <span class="editorial-tag">// Terminal Horizon</span>
+      <h1>Future Blueprints</h1>
+      <p>The system ledger is structured for modular upgrades. Upcoming network additions include permanently bound SQL relational databases and cloud analytics loops.</p>
+      <h2 style="font-family: Georgia, serif; font-weight: 400; margin-top: 35px; color: var(--accent-sage);">System Execution Complete. Thank You.</h2>
+    </div>
+
+  </div>
+
+  <div class="timeline-container"><div class="timeline-bar" id="progressFill"></div></div>
+
+  <script>
+    let currentIdx = 0;
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressFill');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    
+    const SLIDE_DURATION = 5000; 
+    let isPaused = false;
+    let accumulatedTime = 0;
+    let lastTickTime = Date.now();
+
+    function rotateSlides() {
+      // Add the exit transition class to the old slide
+      slides[currentIdx].classList.add('exit-left');
+      slides[currentIdx].classList.remove('active');
+      
+      const oldIdx = currentIdx;
+      currentIdx = (currentIdx + 1) % slides.length;
+      
+      // Prep the incoming slide by stripping any old exit markers
+      slides[currentIdx].classList.remove('exit-left');
+      slides[currentIdx].classList.add('active');
+      
+      // Completely clear out the old slide's positioning classes after transition ends
+      setTimeout(() => {
+        slides[oldIdx].classList.remove('exit-left');
+      }, 800);
+
+      accumulatedTime = 0;
+    }
+
+    function runEngine() {
+      const now = Date.now();
+      const delta = now - lastTickTime;
+      lastTickTime = now;
+
+      if (!isPaused) {
+        accumulatedTime += delta;
+        const pct = Math.min((accumulatedTime / SLIDE_DURATION) * 100, 100);
+        progressBar.style.width = `${pct}%`;
+
+        if (accumulatedTime >= SLIDE_DURATION) {
+          rotateSlides();
+        }
+      }
+      requestAnimationFrame(runEngine);
+    }
+
+    playPauseBtn.onclick = () => {
+      isPaused = !isPaused;
+      if (isPaused) {
+        playPauseBtn.textContent = "▶ Play";
+        playPauseBtn.classList.add('paused-state');
+      } else {
+        playPauseBtn.textContent = "⏸ Pause";
+        playPauseBtn.classList.remove('paused-state');
+      }
+    };
+
+    // REMOVED INTERACTION OVERRIDES: Mouse moves will no longer pause or break your presentation loop!
+    lastTickTime = Date.now();
+    requestAnimationFrame(runEngine);
+  </script>
+</body>
+</html>
