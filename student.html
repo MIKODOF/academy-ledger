@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Workspace - Academy Desk</title>
+  <link rel="stylesheet" href="student.css">
+</head>
+<body>
+  <header class="scholastic-header">
+    <div class="brand-wrapper" style="display: flex; align-items: center; gap: 12px;">
+      <svg class="brand-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #AA6C39;">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+      <div class="brand-title">Student Desk</div>
+    </div>
+    <button id="header-logout-btn" class="action-control-btn hidden">Leave Desk ↗</button>
+  </header>
+
+  <div id="student-auth-gate" class="auth-stage-container grid-bg">
+    <div class="split-auth">
+      <div class="auth-graphic-side">
+        <div class="graphic-wrapper">
+          <span class="editorial-caps">// Student Ledger</span>
+          <h2 class="hero-serif-title">The Student Desk<br>Workspace Gate.</h2>
+          <p class="hero-subtext">Input your allocated identity code sequence to populate your learning registry loop panels.</p>
+        </div>
+      </div>
+      <div class="auth-form-side">
+        <div class="auth-card">
+          <form id="student-login-form" class="stack-form">
+            <div class="form-group">
+              <label>Student ID Code</label>
+              <input type="text" id="student-user-id" required placeholder="e.g., STU-001" autocomplete="off">
+            </div>
+            <div class="form-group" style="margin-top:20px;">
+              <label>Security Passphrase</label>
+              <input type="password" id="student-password" required placeholder="••••••••">
+            </div>
+            <div id="student-auth-error" class="error-banner hidden"></div>
+            <div class="auth-buttons-row">
+              <button type="button" onclick="window.location.href='index.html'" class="btn-text">&larr; Portal Home</button>
+              <button type="submit" class="btn-primary">Verify Student Key &rarr;</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="student-dashboard" class="dashboard-layout hidden">
+    <aside class="sidebar">
+      <div class="profile-block">
+        <span class="user-badge-type">Student Profile</span>
+        <p id="student-display-id" class="sub-tag">STU-000</p>
+      </div>
+      <nav class="nav-stack">
+        <button id="std-tab-active" class="nav-link active"><span class="nav-num">01</span> Open Doubts</button>
+        <button id="std-tab-resolved" class="nav-link"><span class="nav-num">02</span> Answered Library</button>
+        <button id="std-tab-quizzes" class="nav-link"><span class="nav-num">03</span> Quiz Forms</button>
+        <button id="std-tab-marks" class="nav-link"><span class="nav-num">04</span> Received Marks</button>
+      </nav>
+      <div class="sidebar-bottom-actions"><button id="open-modal-btn" class="btn-primary full-width">Log New Doubt +</button></div>
+    </aside>
+    <main class="workspace grid-bg">
+      <header class="workspace-header"><h1 id="student-workspace-title" class="section-title">Open Doubts</h1></header>
+      <div id="student-main-container" class="ticket-grid"></div>
+    </main>
+  </div>
+
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal-box">
+      <header class="modal-header"><h3>Log Academic Blocker</h3></header>
+      <form id="ticket-form" class="stack-form" style="margin-top:20px;">
+        <div class="form-group"><label>Concept Query Statement</label><textarea id="query-text" rows="5" required placeholder="Describe concept blockers cleanly..."></textarea></div>
+        <div class="modal-actions"><button type="button" id="close-modal-btn" class="btn-text">Dismiss</button><button type="submit" class="btn-primary">Send &rarr;</button></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api'; 
+    const PASS = 'login@123';
+    let currentStudent = sessionStorage.getItem('active_student');
+    const stdContainer = document.getElementById('student-main-container');
+    let currentTab = 'active';
+
+    if (currentStudent) bootSession();
+
+    document.getElementById('student-login-form').onsubmit = function(e) {
+      e.preventDefault();
+      const id = document.getElementById('student-user-id').value.trim().toUpperCase();
+      const pass = document.getElementById('student-password').value;
+      const err = document.getElementById('student-auth-error');
+      
+      const num = parseInt(id.split('-')[1]);
+      if (!id.startsWith('STU-') || isNaN(num) || num < 1 || num > 40 || pass !== PASS) {
+        err.textContent = "Identity unverified."; err.classList.remove('hidden'); return;
+      }
+      currentStudent = id; sessionStorage.setItem('active_student', id); bootSession();
+    };
+
+    function bootSession() {
+      document.getElementById('student-auth-gate').classList.add('hidden');
+      document.getElementById('student-dashboard').classList.remove('hidden');
+      document.getElementById('header-logout-btn').classList.remove('hidden');
+      document.getElementById('student-display-id').textContent = currentStudent;
+      switchTab('active');
+    }
+
+    document.getElementById('std-tab-active').onclick = () => switchTab('active');
+    document.getElementById('std-tab-resolved').onclick = () => switchTab('resolved');
+    document.getElementById('std-tab-quizzes').onclick = () => switchTab('quizzes');
+    document.getElementById('std-tab-marks').onclick = () => switchTab('marks');
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+      document.getElementById(`std-tab-${tab}`).classList.add('active');
+      renderContent();
+    }
+
+    async function renderContent() {
+      stdContainer.innerHTML = '';
+      if (currentTab === 'active' || currentTab === 'resolved') {
+        const res = await fetch(`${API_BASE}/tickets`);
+        const tickets = await res.json();
+        const filtered = tickets.filter(t => t.student_id === currentStudent && (currentTab === 'resolved' ? t.status === 'RESOLVED' : t.status !== 'RESOLVED'));
+        if(!filtered.length) { stdContainer.innerHTML = `<p class="empty-notice">No entries found.</p>`; return; }
+        filtered.reverse().forEach(t => {
+          stdContainer.innerHTML += `
+            <div class="scholastic-card m-slide">
+              <div class="card-top"><span class="ticket-id">// TICKET: ${t.id}</span></div>
+              <p class="serif-text">${t.query_text}</p>
+              ${t.teacher_response ? `<div class="teacher-reply-block"><p class="serif-text">${t.teacher_response}</p></div>` : ''}
+            </div>`;
+        });
+      } 
+      else if (currentTab === 'quizzes') {
+        const completed = JSON.parse(localStorage.getItem(`completed_by_${currentStudent}`) || '[]');
+        const res = await fetch(`${API_BASE}/quizzes`);
+        const quizzes = await res.json();
+        const available = quizzes.filter(q => !completed.includes(q.id));
+        if(!available.length) { stdContainer.innerHTML = `<p class="empty-notice">All quizzes completed.</p>`; return; }
+
+        available.reverse().forEach((q) => {
+          let qsHTML = '';
+          q.questions.forEach((quest, qIdx) => {
+            let fields = '';
+            if (quest.type === 'mcq') {
+              quest.choices.forEach((c, cIdx) => {
+                const L = String.fromCharCode(65 + cIdx);
+                fields += `<label style="display:flex; gap:10px; margin-top:8px;"><input type="radio" class="q-ans-node-${q.id}" data-prompt="${quest.prompt}" name="ans-${q.id}-${qIdx}" value="${L}"> <span><b>${L}.</b> ${c}</span></label>`;
+              });
+            } else {
+              fields = `<textarea rows="2" class="q-ans-node-${q.id}" data-prompt="${quest.prompt}" placeholder="Type answer coordinates..."></textarea>`;
+            }
+            qsHTML += `<div style="margin-top:20px; padding-top:12px; border-top:1px dashed #D9D2C5;"><p class="serif-text"><b>${qIdx+1}. ${quest.prompt}</b></p>${fields}</div>`;
+          });
+
+          const card = document.createElement('div'); card.className = 'scholastic-card'; card.style.borderColor = '#4A6B53';
+          card.innerHTML = `<div class="card-top"><span class="ticket-id">// SET: ${q.id}</span></div><h2>${q.title}</h2><form id="form-${q.id}">${qsHTML}<div class="action-row" style="margin-top:20px;"><button type="submit" class="btn-primary" style="background:#4A6B53; border-color:#4A6B53;">Submit Answers Document</button></div></form>`;
+
+          card.querySelector(`#form-${q.id}`).onsubmit = async function(e) {
+            e.preventDefault(); const payload = [];
+            q.questions.forEach((quest, idx) => {
+              if (quest.type === 'mcq') {
+                const checked = card.querySelector(`input[name="ans-${q.id}-${idx}"]:checked`);
+                payload.push({ prompt: quest.prompt, response: checked ? checked.value : '[No Option Selected]' });
+              } else {
+                const textpads = card.querySelectorAll(`textarea.q-ans-node-${q.id}`);
+                payload.push({ prompt: quest.prompt, response: textpads[idx].value.trim() || '[Empty Input]' });
+              }
+            });
+
+            await fetch(`${API_BASE}/submissions`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ student_id: currentStudent, quiz_id: q.id, answers: payload })
+            });
+            completed.push(q.id); localStorage.setItem(`completed_by_${currentStudent}`, JSON.stringify(completed));
+            alert("Answers dispatched successfully!"); switchTab('marks');
+          };
+          stdContainer.appendChild(card);
+        });
+      } 
+      else if (currentTab === 'marks') {
+        const res = await fetch(`${API_BASE}/submissions`);
+        const subs = await res.json();
+        const graded = subs.filter(s => s.student_id === currentStudent && s.graded);
+        if(!graded.length) { stdContainer.innerHTML = `<p class="empty-notice">No grades logged yet.</p>`; return; }
+        graded.reverse().forEach((s) => {
+          stdContainer.innerHTML += `
+            <div class="scholastic-card" style="border-color: #4A6B53;">
+              <div class="card-top"><span class="ticket-id">// REF: ${s.id}</span><span class="badge" style="color:#4A6B53; font-size:14px; font-weight:bold;">SCORE: ${s.marks}</span></div>
+              <h3>Performance Card for: ${s.quiz_id}</h3>
+              <div class="teacher-reply-block"><p class="serif-text" style="font-style:italic;">"${s.comment || 'No feedback.'}"</p></div>
+            </div>`;
+        });
+      }
+    }
+
+    const overlay = document.getElementById('modal-overlay');
+    document.getElementById('open-modal-btn').onclick = () => overlay.classList.remove('hidden');
+    document.getElementById('close-modal-btn').onclick = () => overlay.classList.add('hidden');
+
+    document.getElementById('ticket-form').onsubmit = async function(e) {
+      e.preventDefault(); const txt = document.getElementById('query-text').value.trim();
+      await fetch(`${API_BASE}/tickets`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ student_id: currentStudent, query_text: txt })
+      });
+      this.reset(); overlay.classList.add('hidden'); switchTab('active');
+    };
+
+    document.getElementById('header-logout-btn').onclick = () => { sessionStorage.removeItem('active_student'); location.reload(); };
+  </script>
+</body>
+</html>

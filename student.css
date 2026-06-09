@@ -1,0 +1,49 @@
+:root { --bg-cream: #EFECE6; --card-paper: #F7F5F0; --ink-clay: #3C352E; --text-muted: #8C837A; --pottery-accent: #AA6C39; --forest-accent: #4A6B53; --wire-tan: #D9D2C5; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: var(--bg-cream); color: var(--ink-clay); font-family: -apple-system, sans-serif; overflow-x: hidden; }
+.grid-bg { background-image: linear-gradient(to right, rgba(140, 133, 123, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(140, 133, 123, 0.04) 1px, transparent 1px); background-size: 24px 24px; }
+.scholastic-header { width: 100%; height: 88px; display: flex; justify-content: space-between; align-items: center; padding: 0 48px; background-color: var(--card-paper); border-bottom: 2px solid var(--wire-tan); position: fixed; top: 0; left: 0; z-index: 100; }
+.brand-title { font-family: Georgia, serif; font-size: 18px; font-weight: 700; }
+.action-control-btn { background: none; color: #A34A3F; border: 2px solid #A34A3F; padding: 8px 16px; font-size: 11px; text-transform: uppercase; font-weight: bold; cursor: pointer; border-radius: 4px; }
+.auth-stage-container { width: 100vw; height: 100vh; padding-top: 88px; display: flex; }
+.split-auth { display: flex; height: 100%; width: 100%; }
+.auth-graphic-side { width: 45%; background-color: var(--ink-clay); color: var(--bg-cream); display: flex; align-items: center; padding: 6% 8%; }
+.auth-form-side { width: 55%; display: flex; align-items: center; justify-content: center; padding: 40px; background-color: var(--bg-cream); }
+.auth-card { width: 100%; max-width: 360px; }
+.auth-buttons-row { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
+.editorial-caps { font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 16px; }
+.hero-serif-title { font-family: Georgia, serif; font-size: 32px; font-weight: 700; line-height: 1.2; margin-bottom: 24px; }
+.hero-subtext { font-size: 15px; line-height: 1.65; color: #BDB7AF; }
+.dashboard-layout { display: flex; width: 100vw; height: calc(100vh - 88px); margin-top: 88px; }
+.sidebar { width: 300px; border-right: 2px solid var(--wire-tan); padding: 36px 24px; display: flex; flex-direction: column; background-color: var(--card-paper); flex-shrink: 0; height: 100%; }
+.profile-block { margin-bottom: 28px; }
+.user-badge-type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; color: var(--pottery-accent); background-color: #F5ECE5; padding: 4px 10px; border-radius: 3px; display: inline-block; }
+.sub-tag { font-family: Georgia, serif; font-size: 22px; font-weight: 700; margin-top: 8px; }
+.nav-stack { display: flex; flex-direction: column; gap: 6px; }
+.nav-link { background: none; border: none; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); cursor: pointer; padding: 12px 14px; border-radius: 6px; }
+.nav-link.active, .nav-link:hover { color: var(--ink-clay); background: rgba(0,0,0,0.03); }
+.nav-num { font-family: monospace; color: #D1CDC4; font-size: 11px; margin-right: 8px; }
+.sidebar-bottom-actions { margin-top: auto; padding-top: 20px; }
+.workspace { flex: 1; padding: 44px 56px; overflow-y: auto; height: 100%; }
+.workspace-header { margin-bottom: 36px; border-bottom: 2px solid var(--ink-clay); padding-bottom: 18px; }
+.section-title { font-family: Georgia, serif; font-size: 28px; font-weight: 700; }
+.ticket-grid { display: flex; flex-direction: column; gap: 28px; max-width: 760px; padding-bottom: 60px; }
+.scholastic-card { background-color: var(--card-paper); border: 2px solid var(--wire-tan); border-radius: 8px; padding: 32px; position: relative; box-shadow: var(--shadow-sm); }
+.scholastic-card::before { content: ""; position: absolute; top: -2px; left: -2px; right: -2px; height: 6px; background-color: var(--pottery-accent); border-radius: 8px 8px 0 0; }
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px dotted #D9D2C5; padding-bottom: 10px; }
+.ticket-id { font-family: monospace; font-size: 11px; color: var(--text-muted); }
+.serif-text { font-family: Georgia, serif; font-size: 16px; line-height: 1.65; white-space: pre-line; }
+.teacher-reply-block { margin-top: 24px; padding-top: 20px; border-top: 1px dashed var(--wire-tan); display: flex; gap: 12px; }
+.teacher-reply-block::before { content: "Ans."; font-family: Georgia, serif; font-style: italic; font-weight: bold; font-size: 16px; }
+label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+input[type="text"], input[type="password"], textarea { width: 100%; background-color: #FFFFFF; border: 2px solid var(--wire-tan); padding: 12px 16px; font-size: 14px; color: var(--ink-clay); border-radius: 6px; font-family: inherit; }
+.btn-primary { background-color: var(--ink-clay); color: var(--card-paper); border: 2px solid var(--ink-clay); font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 12px 24px; cursor: pointer; border-radius: 4px; }
+.btn-text { background: none; border: none; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); cursor: pointer; }
+.action-row { display: flex; justify-content: flex-end; }
+.full-width { width: 100%; }
+.hidden { display: none !important; }
+.empty-notice { font-family: Georgia, serif; font-style: italic; color: var(--text-muted); padding: 32px 0; text-align: center; }
+.modal-overlay { position: fixed; inset: 0; background-color: rgba(60, 53, 46, 0.15); backdrop-filter: blur(12px); display: flex; justify-content: center; align-items: center; z-index: 200; }
+.modal-box { background-color: var(--card-paper); border: 2px solid var(--ink-clay); border-radius: 8px; width: 100%; max-width: 460px; padding: 36px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+@media (max-width: 768px) { .scholastic-header { padding: 0 20px; height: 72px; } .dashboard-layout { flex-direction: column; height: auto; margin-top: 72px; } .sidebar { width: 100%; border-right: none; padding: 20px; } .nav-stack { flex-direction: row; flex-wrap: wrap; justify-content: center; } .workspace { padding: 28px 16px; } .split-auth { flex-direction: column; } .auth-graphic-side, .auth-form-side { width: 100%; padding: 24px; } }

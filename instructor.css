@@ -1,0 +1,119 @@
+:root { 
+  --bg-cream: #EFECE6; 
+  --card-paper: #F7F5F0; 
+  --ink-clay: #3C352E; 
+  --text-muted: #8C837A; 
+  --pottery-accent: #AA6C39; 
+  --forest-accent: #4A6B53; 
+  --wire-tan: #D9D2C5; 
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { 
+  background-color: var(--bg-cream); 
+  color: var(--ink-clay); 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+  overflow-x: hidden; 
+}
+
+.grid-bg { background-image: linear-gradient(to right, rgba(140, 133, 123, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(140, 133, 123, 0.04) 1px, transparent 1px); background-size: 24px 24px; }
+
+/* Header Layout System */
+.scholastic-header { width: 100%; height: 88px; display: flex; justify-content: space-between; align-items: center; padding: 0 48px; background-color: var(--card-paper); border-bottom: 2px solid var(--wire-tan); position: fixed; top: 0; left: 0; z-index: 100; }
+.brand-wrapper { display: flex; align-items: center; gap: 12px; }
+.brand-icon { color: var(--forest-accent); flex-shrink: 0; }
+.brand-title { font-family: Georgia, serif; font-size: 18px; font-weight: 700; }
+.action-control-btn { background: none; color: #A34A3F; border: 2px solid #A34A3F; padding: 8px 16px; font-size: 11px; text-transform: uppercase; font-weight: bold; cursor: pointer; border-radius: 4px; }
+
+/* Auth Gate Container */
+.auth-stage-container { width: 100vw; height: 100vh; padding-top: 88px; display: flex; }
+.split-auth { display: flex; height: 100%; width: 100%; }
+.auth-graphic-side { width: 45%; background-color: var(--forest-accent); color: var(--bg-cream); display: flex; align-items: center; padding: 6% 8%; }
+.auth-form-side { width: 55%; display: flex; align-items: center; justify-content: center; padding: 40px; background-color: var(--bg-cream); }
+.auth-card { width: 100%; max-width: 360px; }
+.auth-buttons-row { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
+
+.editorial-caps { font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 16px; }
+.hero-serif-title { font-family: Georgia, serif; font-size: 32px; font-weight: 700; line-height: 1.2; margin-bottom: 24px; }
+.hero-subtext { font-size: 15px; line-height: 1.65; color: #BDB7AF; }
+
+/* Dashboard Structural Canvas */
+.dashboard-layout { display: flex; width: 100vw; height: calc(100vh - 88px); margin-top: 88px; }
+.sidebar { width: 320px; border-right: 2px solid var(--wire-tan); padding: 36px 24px; display: flex; flex-direction: column; background-color: var(--card-paper); flex-shrink: 0; height: 100%; }
+.profile-block { margin-bottom: 28px; }
+.user-badge-type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; color: var(--forest-accent); background-color: #E6EEF5; padding: 4px 10px; border-radius: 3px; display: inline-block; }
+.sub-tag { font-family: Georgia, serif; font-size: 22px; font-weight: 700; margin-top: 8px; }
+
+.nav-stack { display: flex; flex-direction: column; gap: 6px; }
+.nav-link { background: none; border: none; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); cursor: pointer; padding: 12px 14px; border-radius: 6px; width: 100%; }
+.nav-link.active, .nav-link:hover { color: var(--ink-clay); background: rgba(0,0,0,0.03); }
+.nav-num { font-family: monospace; color: #D1CDC4; font-size: 11px; margin-right: 8px; }
+
+.workspace { flex: 1; padding: 44px 56px; overflow-y: auto; height: 100%; }
+.workspace-header { margin-bottom: 36px; border-bottom: 2px solid var(--ink-clay); padding-bottom: 18px; }
+.section-title { font-family: Georgia, serif; font-size: 28px; font-weight: 700; }
+
+/* Cards & Parchment Components */
+.scholastic-card { background-color: var(--card-paper); border: 2px solid var(--wire-tan); border-radius: 8px; padding: 32px; position: relative; box-shadow: var(--shadow-sm); }
+.scholastic-card::before { content: ""; position: absolute; top: -2px; left: -2px; right: -2px; height: 6px; background-color: var(--pottery-accent); border-radius: 8px 8px 0 0; }
+.scholastic-card.mini::before { background-color: var(--forest-accent); }
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px dotted #D9D2C5; padding-bottom: 10px; }
+.ticket-id { font-family: monospace; font-size: 11px; color: var(--text-muted); }
+.serif-text { font-family: Georgia, serif; font-size: 16px; line-height: 1.65; white-space: pre-line; }
+
+/* FIX: Input Elements Now Have Clean White Background Paper Colors */
+label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+input[type="text"], input[type="password"], textarea, .premium-select { 
+  width: 100%; 
+  background-color: #FFFFFF !important; /* Forces visible background */
+  border: 2px solid var(--wire-tan); 
+  padding: 12px 16px; 
+  font-size: 14px; 
+  color: var(--ink-clay); 
+  border-radius: 6px; 
+  font-family: inherit; 
+}
+textarea { resize: none; font-family: Georgia, serif; }
+input:focus, textarea:focus, .premium-select:focus { outline: none; border-color: var(--forest-accent); }
+
+/* Left Sidebar Feed Lists */
+.scroll-feed { flex: 1; overflow-y: auto; margin-top: 16px; }
+.feed-item { padding: 14px 16px; border-bottom: 1px solid rgba(217, 210, 197, 0.5); cursor: pointer; border-radius: 6px; margin-bottom: 4px; }
+.feed-item:hover { background-color: #FFFFFF; }
+.feed-item.active { border-left: 4px solid var(--forest-accent); background-color: #FFFFFF; padding-left: 12px; }
+.feed-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
+.feed-item p { font-size: 13px; color: var(--ink-clay); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: Georgia, serif; margin-top: 4px; }
+
+.quiz-grid-split { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 36px; align-items: start; }
+.options-input-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.options-input-stack input { padding: 10px 12px !important; font-size: 13px !important; }
+.mini-grid { max-height: calc(100vh - 280px); overflow-y: auto; }
+
+.btn-primary { background-color: var(--ink-clay); color: var(--card-paper); border: 2px solid var(--ink-clay); font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 12px 24px; cursor: pointer; border-radius: 4px; }
+.btn-text { background: none; border: none; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); cursor: pointer; }
+.action-row { display: flex; justify-content: flex-end; }
+.full-width { width: 100%; }
+.hidden { display: none !important; }
+.center-state { text-align: center; padding: 64px 24px; border: 2px dashed var(--wire-tan); border-radius: 8px; background: rgba(247, 245, 240, 0.5); }
+.view-panel { width: 100%; max-width: 960px; margin: 0 auto; }
+
+.m-slide { opacity: 0; transform: translate3d(0, 24px, 0); animation: slideInUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes slideInUp { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
+@media (max-width: 768px) {
+  .scholastic-header { padding: 0 20px; height: 72px; }
+  .auth-stage-container { padding-top: 72px; height: auto; }
+  .split-auth { flex-direction: column; }
+  .auth-graphic-side { width: 100%; padding: 40px 20px; text-align: center; justify-content: center; }
+  .hero-serif-title { font-size: 26px; }
+  .auth-form-side { width: 100%; padding: 32px 20px; }
+  .dashboard-layout { flex-direction: column; height: auto; margin-top: 72px; }
+  .sidebar { width: 100%; border-right: none; padding: 20px; }
+  .nav-stack { flex-direction: row; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .nav-link { font-size: 11px; padding: 8px 12px; width: auto; }
+  .scroll-feed { max-height: 160px; border: 1px solid var(--wire-tan); border-radius: 6px; background: #fff; margin-bottom: 16px; }
+  .workspace { padding: 28px 16px; height: auto; }
+  .section-title { font-size: 22px; }
+  .options-input-stack { grid-template-columns: 1fr; gap: 8px; }
+  .quiz-grid-split { grid-template-columns: 1fr; gap: 24px; }
+}

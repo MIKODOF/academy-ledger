@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instructor Console - Academy Desk</title>
+  <link rel="stylesheet" href="instructor.css">
+</head>
+<body>
+  <header class="scholastic-header">
+    <div class="brand-wrapper" style="display: flex; align-items: center; gap: 12px;">
+      <svg class="brand-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #4A6B53;">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+      <div class="brand-title">Instructor Console</div>
+    </div>
+    <button id="header-logout-btn" class="action-control-btn btn-logout-active hidden">Leave Terminal ↗</button>
+  </header>
+
+  <div id="teacher-auth-gate" class="auth-stage-container grid-bg">
+    <div class="split-auth">
+      <div class="auth-graphic-side">
+        <div class="graphic-wrapper">
+          <span class="editorial-caps">// Faculty Administration</span>
+          <h2 class="hero-serif-title">Instructor Master<br>Ledger Portal Terminal.</h2>
+          <p class="hero-subtext">Verify master security access credentials to launch node quiz publishing matrices.</p>
+        </div>
+      </div>
+      <div class="auth-form-side">
+        <div class="auth-card">
+          <form id="teacher-login-form" class="stack-form">
+            <div class="form-group">
+              <label>Instructor Key ID</label>
+              <input type="text" id="teacher-user-id" required placeholder="e.g., INST-1" autocomplete="off">
+            </div>
+            <div class="form-group" style="margin-top:20px;">
+              <label>Faculty Password Token</label>
+              <input type="password" id="teacher-password" required placeholder="••••••••">
+            </div>
+            <div id="teacher-auth-error" class="error-banner hidden"></div>
+            <div class="auth-buttons-row">
+              <button type="button" onclick="window.location.href='index.html'" class="btn-text">&larr; Portal Home</button>
+              <button type="submit" class="btn-primary">Verify Keys &rarr;</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="teacher-dashboard" class="dashboard-layout hidden">
+    <aside class="sidebar">
+      <div class="profile-block">
+        <span class="user-badge-type">Faculty Terminal</span>
+        <p id="instructor-display-id" class="sub-tag">INST-1</p>
+      </div>
+      <nav class="nav-stack">
+        <button id="tea-tab-doubts" class="nav-link active"><span class="nav-num">01</span> Doubt Queue (<span id="queue-count-badge">0</span>)</button>
+        <button id="tea-tab-quiz" class="nav-link"><span class="nav-num">02</span> Google Quiz Studio</button>
+        <button id="tea-tab-grades" class="nav-link"><span class="nav-num">03</span> Evaluation Desk (<span id="sub-count-badge">0</span>)</button>
+      </nav>
+      <div id="teacher-sidebar-dynamic-list" class="scroll-feed" style="border-top:1px solid #D9D2C5;"></div>
+    </aside>
+    
+    <main class="workspace grid-bg">
+      <div id="tea-doubts-canvas" class="view-panel">
+        <header class="workspace-header"><h1 class="section-title">Verify Pending Inquiries</h1></header>
+        <div id="tea-doubts-empty" class="center-state"><h3>Select an active doubt item to open resolution text pads.</h3></div>
+        <div id="tea-doubts-active" class="hidden">
+          <div class="scholastic-card"><span id="active-tea-meta" class="ticket-id">// PROMPT</span><p id="active-tea-text" class="serif-text" style="margin-top:10px;"></p></div>
+          <div style="margin-top:40px;">
+            <label>Write Explanation</label>
+            <textarea id="resolution-text" rows="6" placeholder="Provide solution metrics..."></textarea>
+            <div class="action-row"><button id="submit-resolution-btn" class="btn-primary">Dispatch Solution &rarr;</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tea-quiz-canvas" class="view-panel hidden">
+        <header class="workspace-header"><h1 class="section-title">Compose Quiz Form</h1></header>
+        <div class="quiz-grid-split">
+          <div>
+            <form id="quiz-master-form" class="stack-form">
+              <div class="scholastic-card" style="margin-bottom:20px;"><label>Quiz Title</label><input type="text" id="quiz-master-title" required placeholder="Untitled Assessment Sheet"></div>
+              <div id="infinite-questions-wrapper"></div>
+              <div class="action-row" style="justify-content:space-between; background:#E5E2DA; padding:16px; border-radius:6px; margin-top:20px;"><button type="button" id="add-question-node-btn" class="btn-primary">[ + ] Add Question Card</button><button type="submit" class="btn-primary" style="background:#4A6B53; border-color:#4A6B53;">Publish Entire Form</button></div>
+            </form>
+          </div>
+          <div><span class="editorial-caps">Published Registries</span><div id="published-quizzes-container" class="mini-grid"></div></div>
+        </div>
+      </div>
+
+      <div id="tea-grades-canvas" class="view-panel hidden">
+        <header class="workspace-header"><h1 class="section-title">Evaluation Desk</h1></header>
+        <div id="tea-grades-empty" class="center-state"><h3>Select a student exam paper to run evaluations.</h3></div>
+        <div id="tea-grades-active" class="hidden">
+          <div class="scholastic-card"><span id="active-grade-meta" class="ticket-id">// SHEET</span><div id="student-answers-review-box" style="margin-top:16px;"></div></div>
+          <div class="scholastic-card" style="margin-top:24px; border-color:#4A6B53;">
+            <h3>Assign Metrics</h3>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:20px; margin-top:16px;">
+              <div><label>Marks Received (%)</label><input type="text" id="grade-score-input" required placeholder="e.g. 94%"></div>
+              <div><label>Feedback</label><input type="text" id="grade-feedback-input" placeholder="Excellent execution..."></div>
+            </div>
+            <div class="action-row"><button id="submit-grade-btn" class="btn-primary" style="background:#4A6B53; border-color:#4A6B53;">Log Grade &rarr;</button></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const API_BASE = '/api'; 
+    const KEY = '112233445566';
+    let currentTeacher = sessionStorage.getItem('active_teacher');
+    const sideFeed = document.getElementById('teacher-sidebar-dynamic-list');
+    let selectedTicket = null; let selectedSub = null; let currentTab = 'doubts';
+
+    if (currentTeacher) bootSession();
+
+    document.getElementById('teacher-login-form').onsubmit = function(e) {
+      e.preventDefault();
+      const id = document.getElementById('teacher-user-id').value.trim().toUpperCase();
+      const pass = document.getElementById('teacher-password').value;
+      const err = document.getElementById('teacher-auth-error');
+
+      const num = parseInt(id.split('-')[1]);
+      if (!id.startsWith('INST-') || isNaN(num) || num < 1 || num > 5 || pass !== KEY) {
+        err.textContent = "Faculty identity code unverified or invalid master passphrase."; err.classList.remove('hidden'); return;
+      }
+      currentTeacher = id; sessionStorage.setItem('active_teacher', id); bootSession();
+    };
+
+    function bootSession() {
+      document.getElementById('teacher-auth-gate').classList.add('hidden');
+      document.getElementById('teacher-dashboard').classList.remove('hidden');
+      document.getElementById('header-logout-btn').classList.remove('hidden');
+      document.getElementById('instructor-display-id').textContent = currentTeacher;
+      switchTab('doubts');
+    }
+
+    document.getElementById('tea-tab-doubts').onclick = () => switchTab('doubts');
+    document.getElementById('tea-tab-quiz').onclick = () => switchTab('quiz');
+    document.getElementById('tea-tab-grades').onclick = () => switchTab('grades');
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tea-tab-${tab}`).classList.add('active');
+      document.getElementById('tea-doubts-canvas').classList.add('hidden');
+      document.getElementById('tea-quiz-canvas').classList.add('hidden');
+      document.getElementById('tea-grades-canvas').classList.add('hidden');
+      sideFeed.classList.add('hidden');
+
+      if (tab === 'doubts') {
+        document.getElementById('tea-doubts-canvas').classList.remove('hidden'); sideFeed.classList.remove('hidden'); renderDoubtsFeed();
+      } else if (tab === 'quiz') {
+        document.getElementById('tea-quiz-canvas').classList.remove('hidden'); renderQuizFeed();
+      } else if (tab === 'grades') {
+        document.getElementById('tea-grades-canvas').classList.remove('hidden'); sideFeed.classList.remove('hidden'); renderGradesFeed();
+      }
+    }
+
+    async function renderDoubtsFeed() {
+      sideFeed.innerHTML = '';
+      const res = await fetch(`${API_BASE}/tickets`);
+      const tickets = await res.json();
+      const pending = tickets.filter(t => t.status !== 'RESOLVED');
+      document.getElementById('queue-count-badge').textContent = pending.length;
+
+      if(!pending.length) { sideFeed.innerHTML = `<p class="empty-notice">Queue clear.</p>`; document.getElementById('tea-doubts-active').classList.add('hidden'); document.getElementById('tea-doubts-empty').classList.remove('hidden'); return; }
+
+      pending.forEach(t => {
+        const div = document.createElement('div'); div.className = `feed-item ${selectedTicket?.id === t.id ? 'active' : ''}`;
+        div.innerHTML = `<div class="feed-meta"><b>${t.student_id}</b></div><p>${t.query_text}</p>`;
+        div.onclick = () => {
+          selectedTicket = t; document.getElementById('tea-doubts-empty').classList.add('hidden'); document.getElementById('tea-doubts-active').classList.remove('hidden');
+          document.getElementById('active-tea-meta').textContent = `// Doubt: ${t.id}`;
+          document.getElementById('active-tea-text').textContent = t.query_text;
+          renderDoubtsFeed();
+        };
+        sideFeed.appendChild(div);
+      });
+    }
+
+    document.getElementById('submit-resolution-btn').onclick = async () => {
+      const val = document.getElementById('resolution-text').value.trim(); if(!val || !selectedTicket) return;
+      await fetch(`${API_BASE}/tickets/resolve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: selectedTicket.id, teacher_response: val })
+      });
+      document.getElementById('resolution-text').value = ''; selectedTicket = null;
+      document.getElementById('tea-doubts-active').classList.add('hidden'); document.getElementById('tea-doubts-empty').classList.remove('hidden');
+      renderDoubtsFeed();
+    };
+
+    const wrapper = document.getElementById('infinite-questions-wrapper');
+    let nodesCount = 0;
+
+    function appendNode() {
+      nodesCount++; const id = `node-${Date.now()}-${nodesCount}`;
+      const el = document.createElement('div'); el.className = 'scholastic-card'; el.id = id; el.style.marginBottom = '16px';
+      el.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><span class="editorial-caps">Question Unit</span><button type="button" onclick="document.getElementById('${id}').remove()" style="background:none; border:none; color:#991B1B; font-weight:bold; cursor:pointer;">[ WIPE ]</button></div>
+        <div style="display:grid; grid-template-columns:1.3fr 0.7fr; gap:16px;">
+          <div><label>Prompt</label><input type="text" class="inf-p" required></div>
+          <div><label>Format</label><select class="premium-select inf-t" onchange="toggleField('${id}', this.value)"><option value="mcq">MCQ Box</option><option value="text">Text Area</option></select></div>
+        </div>
+        <div class="inf-c" style="margin-top:12px;"><div class="options-input-stack"><input type="text" class="o1" placeholder="Option A" required><input type="text" class="o2" placeholder="Option B" required><input type="text" class="o3" placeholder="Option C"><input type="text" class="o4" placeholder="Option D"></div></div>`;
+      wrapper.appendChild(el);
+    }
+    document.getElementById('add-question-node-btn').onclick = appendNode;
+
+    window.toggleField = function(id, val) {
+      const box = document.getElementById(id).querySelector('.inf-c');
+      box.style.display = val === 'mcq' ? 'block' : 'none';
+      box.querySelectorAll('input').forEach(i => i.required = val === 'mcq');
+    }
+
+    document.getElementById('quiz-master-form').onsubmit = async function(e) {
+      e.preventDefault(); const nodes = Array.from(wrapper.children); if(!nodes.length) return;
+      const questions = nodes.map(n => ({
+        prompt: n.querySelector('.inf-p').value.trim(),
+        type: n.querySelector('.inf-t').value,
+        choices: n.querySelector('.inf-t').value === 'mcq' ? [n.querySelector('.o1').value, n.querySelector('.o2').value, n.querySelector('.o3').value, n.querySelector('.o4').value].filter(v=>v) : null
+      }));
+      await fetch(`${API_BASE}/quizzes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ author: currentTeacher, title: document.getElementById('quiz-master-title').value.trim(), questions })
+      });
+      document.getElementById('quiz-master-title').value = ''; wrapper.innerHTML = ''; appendNode(); renderQuizFeed();
+    };
+
+    async function renderQuizFeed() {
+      const box = document.getElementById('published-quizzes-container'); box.innerHTML = '';
+      const res = await fetch(`${API_BASE}/quizzes`);
+      const quizzes = await res.json();
+      quizzes.reverse().forEach(q => {
+        box.innerHTML += `<div class="scholastic-card mini" style="border-color:#4A6B53; margin-bottom:12px;"><h4>${q.title}</h4><p style="font-size:12px; color:var(--text-muted);">Questions: ${q.questions.length}</p></div>`;
+      });
+    }
+
+    async function renderGradesFeed() {
+      sideFeed.innerHTML = '';
+      const res = await fetch(`${API_BASE}/submissions`);
+      const subs = await res.json();
+      const pending = subs.filter(s => !s.graded);
+      document.getElementById('sub-count-badge').textContent = pending.length;
+      if(!pending.length) { sideFeed.innerHTML = `<p class="empty-notice">No papers pending grading.</p>`; document.getElementById('tea-grades-active').classList.add('hidden'); document.getElementById('tea-grades-empty').classList.remove('hidden'); return; }
+
+      pending.forEach(s => {
+        const div = document.createElement('div'); div.className = `feed-item ${selectedSub?.id === s.id ? 'active' : ''}`;
+        div.innerHTML = `<div class="feed-meta"><b>${s.student_id}</b></div><p>Quiz: ${s.quiz_id}</p>`;
+        div.onclick = () => {
+          selectedSub = s; document.getElementById('tea-grades-empty').classList.add('hidden'); document.getElementById('tea-grades-active').classList.remove('hidden');
+          const box = document.getElementById('student-answers-review-box'); box.innerHTML = '';
+          s.answers.forEach((ans, idx) => {
+            box.innerHTML += `<div style="margin-top:14px; padding-bottom:8px; border-bottom:1px dashed #D9D2C5;"><p><b>Q${idx+1}. Prompt:</b> ${ans.prompt}</p><p style="color:#4A6B53; font-style:italic; padding-left:12px; margin-top:4px;"><b>Answered:</b> "${ans.response}"</p></div>`;
+          });
+          renderGradesFeed();
+        };
+        sideFeed.appendChild(div);
+      });
+    }
+
+    document.getElementById('submit-grade-btn').onclick = async () => {
+      const mark = document.getElementById('grade-score-input').value.trim();
+      const feedback = document.getElementById('grade-feedback-input').value.trim();
+      if(!mark || !selectedSub) return;
+      await fetch(`${API_BASE}/submissions/grade`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: selectedSub.id, marks: mark, comment: feedback })
+      });
+      document.getElementById('grade-score-input').value = ''; document.getElementById('grade-feedback-input').value = '';
+      selectedSub = null; document.getElementById('tea-grades-active').classList.add('hidden'); document.getElementById('tea-grades-empty').classList.remove('hidden');
+      renderGradesFeed();
+    };
+    appendNode();
+    document.getElementById('header-logout-btn').onclick = () => { sessionStorage.removeItem('active_teacher'); location.reload(); };
+  </script>
+</body>
+</html>
