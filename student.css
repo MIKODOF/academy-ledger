@@ -47,3 +47,141 @@ input[type="text"], input[type="password"], textarea { width: 100%; background-c
 .modal-box { background-color: var(--card-paper); border: 2px solid var(--ink-clay); border-radius: 8px; width: 100%; max-width: 460px; padding: 36px; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
 @media (max-width: 768px) { .scholastic-header { padding: 0 20px; height: 72px; } .dashboard-layout { flex-direction: column; height: auto; margin-top: 72px; } .sidebar { width: 100%; border-right: none; padding: 20px; } .nav-stack { flex-direction: row; flex-wrap: wrap; justify-content: center; } .workspace { padding: 28px 16px; } .split-auth { flex-direction: column; } .auth-graphic-side, .auth-form-side { width: 100%; padding: 24px; } }
+
+/* --- CUSTOM SCROLLBARS --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--wire-tan);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pottery-accent);
+}
+
+/* --- CUSTOM CURSOR --- */
+.custom-cursor {
+  width: 8px;
+  height: 8px;
+  background-color: var(--ink-clay);
+  border-radius: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  transition: width 0.3s, height 0.3s, background-color 0.3s;
+}
+.custom-cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--pottery-accent);
+  border-radius: 50%;
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9998;
+  transition: border 0.3s, transform 0.1s ease-out, background-color 0.3s;
+}
+.cursor-hover .custom-cursor {
+  width: 14px;
+  height: 14px;
+  background-color: var(--forest-accent);
+}
+.cursor-hover .custom-cursor-ring {
+  width: 50px;
+  height: 50px;
+  border-color: var(--forest-accent);
+  background-color: rgba(74, 107, 83, 0.08);
+}
+
+html, body {
+  cursor: none !important;
+}
+a, button, input, textarea, select, .feed-item, .modal-overlay {
+  cursor: none !important;
+}
+
+/* --- LOGO HEADER STYLES --- */
+.header-left-brand { display: flex; align-items: center; }
+.header-right-brand { display: flex; align-items: center; gap: 12px; }
+.header-logo-frame {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--pottery-accent);
+  background: white;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.header-logo-frame img { width: 100%; height: 100%; object-fit: contain; }
+.school-title { font-family: Georgia, serif; font-size: 14px; font-weight: 700; color: var(--ink-clay); text-align: right; }
+.school-subtitle { font-family: monospace; font-size: 9px; color: var(--pottery-accent); font-weight: bold; display: block; text-align: right; margin-top: 1px; }
+
+/* Subtle card & button lift on hover */
+.scholastic-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.scholastic-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(60, 53, 46, 0.06);
+}
+.btn-primary {
+  transition: background-color 0.3s, transform 0.1s ease-out, padding 0.3s, border-color 0.3s;
+}
+.btn-primary:hover {
+  background-color: #2c251e;
+  transform: translateY(-1px);
+}
+.action-control-btn {
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+.action-control-btn:hover {
+  background-color: #A34A3F !important;
+  color: #FFF !important;
+}
+}
+
+/* --- BACKGROUND ANIMATIONS (FLOATING BOOKS) --- */
+.bg-book {
+  position: absolute;
+  color: rgba(140, 133, 123, 0.15); /* Soft, low-contrast ink color */
+  z-index: 0;
+  pointer-events: auto;
+  transition: color 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+}
+
+/* Hover highlights */
+.bg-book:hover {
+  color: var(--pottery-accent);
+  filter: drop-shadow(0 8px 16px rgba(170, 108, 57, 0.25));
+  transform: scale(1.25) rotate(12deg) !important;
+}
+
+/* Floating keyframes */
+@keyframes float-slow {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(3deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+@keyframes float-mid {
+  0% { transform: translateY(0px) rotate(4deg); }
+  50% { transform: translateY(-25px) rotate(-4deg); }
+  100% { transform: translateY(0px) rotate(4deg); }
+}
+
+/* Positions inside gate screen */
+.auth-stage-container .book-node-1 { top: 15%; left: 52%; animation: float-slow 8s ease-in-out infinite; }
+.auth-stage-container .book-node-2 { top: 70%; left: 58%; animation: float-mid 10s ease-in-out infinite; }
+.auth-stage-container .book-node-3 { top: 35%; right: 10%; animation: float-mid 9s ease-in-out infinite; }
+
+/* Positions inside dashboard workspace */
+.workspace .book-node-1 { top: 10%; right: 8%; animation: float-slow 7s ease-in-out infinite; }
+.workspace .book-node-2 { bottom: 15%; left: 5%; animation: float-mid 11s ease-in-out infinite; }

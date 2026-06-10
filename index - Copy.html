@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Academy Ledger Hub</title>
+  <!-- Sage Book Favicon Logo -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A6B53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z' /><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z' /></svg>">
+  <style>
+    :root {
+      --bg-cream: #EFECE6; 
+      --card-paper: #F7F5F0; 
+      --ink-clay: #3C352E; 
+      --text-muted: #8C837A; 
+      --pottery-accent: #AA6C39; 
+      --blue-stroke: #5D9CEC; 
+      --wire-tan: #D9D2C5;      
+      --accent-sage: #4A6B53;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      background-color: var(--bg-cream); 
+      color: var(--ink-clay); 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      overflow: hidden; 
+      height: 100vh; 
+      position: relative;
+    }
+    .grid-bg { 
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(to right, rgba(140, 133, 123, 0.04) 1px, transparent 1px), 
+        linear-gradient(to bottom, rgba(140, 133, 123, 0.04) 1px, transparent 1px); 
+      background-size: 24px 24px; 
+      z-index: 1;
+    }
+    
+    /* INTERACTIVE FLOATING BACKGROUND OPEN BOOKS */
+    .bg-book {
+      position: absolute;
+      color: rgba(140, 133, 123, 0.2);
+      z-index: 2;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: color 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+    }
+    /* Magnetic Highlight Glow on Hover */
+    .bg-book:hover {
+      color: var(--accent-sage);
+      filter: drop-shadow(0 8px 16px rgba(74, 107, 83, 0.25));
+      transform: scale(1.3) rotate(12deg) !important;
+    }
+
+    /* Floating Drifting Keyframe Sequences */
+    @keyframes float-slow {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(3deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    @keyframes float-mid {
+      0% { transform: translateY(0px) rotate(4deg); }
+      50% { transform: translateY(-25px) rotate(-4deg); }
+      100% { transform: translateY(0px) rotate(4deg); }
+    }
+
+    /* Individual book layout placements */
+    .book-node-1 { top: 22%; left: 10%; animation: float-slow 7s ease-in-out infinite; }
+    .book-node-2 { top: 62%; left: 14%; animation: float-mid 9s ease-in-out infinite; }
+    .book-node-3 { top: 24%; right: 12%; animation: float-mid 8s ease-in-out infinite; }
+    .book-node-4 { top: 68%; right: 10%; animation: float-slow 10s ease-in-out infinite; }
+    
+    /* SPLIT BRAND HEADER */
+    .scholastic-header { 
+      width: 100%; height: 88px; display: flex; align-items: center; 
+      justify-content: space-between; 
+      padding: 0 48px; background-color: var(--card-paper); 
+      border-bottom: 2px solid var(--wire-tan); position: fixed; top: 0; left: 0; z-index: 100; 
+    }
+    
+    .header-left-brand { display: flex; align-items: center; }
+    .brand-icon { color: var(--accent-sage); }
+
+    .header-right-brand { display: flex; align-items: center; gap: 12px; }
+    .header-logo-frame {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1.5px solid var(--accent-sage);
+      background: white;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .header-logo-frame img { width: 100%; height: 100%; object-fit: contain; }
+    .school-title { font-family: Georgia, serif; font-size: 16px; font-weight: 700; color: var(--ink-clay); text-align: right; }
+    .school-subtitle { font-family: monospace; font-size: 10px; color: var(--accent-sage); font-weight: bold; display: block; text-align: right; margin-top: 1px; }
+
+    /* --- CUSTOM CURSOR (COHESIVE SCHOLASTIC THEME) --- */
+    .custom-cursor {
+      width: 8px;
+      height: 8px;
+      background-color: var(--ink-clay);
+      border-radius: 50%;
+      position: fixed;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      transition: width 0.3s, height 0.3s, background-color 0.3s;
+    }
+    .custom-cursor-ring {
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--accent-sage);
+      border-radius: 50%;
+      position: fixed;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9998;
+      transition: border 0.3s, transform 0.1s ease-out, background-color 0.3s;
+    }
+    .cursor-hover .custom-cursor {
+      width: 14px;
+      height: 14px;
+      background-color: var(--pottery-accent);
+    }
+    .cursor-hover .custom-cursor-ring {
+      width: 50px;
+      height: 50px;
+      border-color: var(--pottery-accent);
+      background-color: rgba(170, 108, 57, 0.08);
+    }
+    
+    html, body {
+      cursor: none !important;
+    }
+    a, button, .bg-book {
+      cursor: none !important;
+    }
+
+    /* --- SPLIT GRID SYSTEM --- */
+    .presentation-container { 
+      width: 100vw; 
+      height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      padding-top: 88px; 
+      position: relative; 
+      z-index: 5; 
+    }
+    .presentation-split {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      gap: 4rem;
+    }
+    .presentation-content {
+      max-width: 55%;
+      text-align: left;
+    }
+    
+    .text-stroke-wrapper { position: relative; display: inline-block; margin-bottom: 24px; }
+    .presentation-title { font-family: Georgia, serif; font-size: clamp(28px, 5vw, 52px); font-weight: 700; position: relative; z-index: 5; line-height: 1.15; }
+    .paint-stroke { position: absolute; bottom: 4px; left: -4%; width: 108%; height: 16px; background-color: var(--blue-stroke); z-index: 1; opacity: 0.75; border-radius: 4px; }
+    .presentation-sub { font-size: 15px; line-height: 1.7; color: #5A524A; margin-bottom: 32px; }
+    .editorial-caps { font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 16px; }
+    
+    .btn-primary { 
+      background-color: var(--ink-clay); color: var(--card-paper); border: 2px solid var(--ink-clay); 
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; 
+      padding: 14px 28px; border-radius: 4px; transition: background-color 0.3s, transform 0.1s ease-out, padding 0.3s; text-decoration: none; 
+      display: inline-block;
+    }
+    .btn-primary:hover { padding-left: 36px; background-color: #2c251e; }
+    .dual-gate-row { display: flex; gap: 16px; justify-content: flex-start; }
+    
+    /* --- 3D BOOK VECTOR CONTAINER --- */
+    .book-3d-container {
+      width: 40%;
+      max-width: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      pointer-events: auto;
+    }
+    #vectorBook {
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 15px 35px rgba(60, 53, 46, 0.25));
+    }
+    .book-part {
+      transition: transform 0.1s ease-out;
+    }
+
+    @media (max-width: 900px) {
+      .presentation-split {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+      }
+      .presentation-content {
+        max-width: 100%;
+        text-align: center;
+      }
+      .dual-gate-row {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+        justify-content: center;
+      }
+      .btn-primary { text-align: center; width: 100%; }
+      .book-3d-container {
+        display: none; /* Hide book on small tablets to preserve workspace space */
+      }
+    }
+    
+    @media (max-width: 768px) { 
+      .scholastic-header { padding: 0 20px; }
+      .bg-book { display: none; }
+    }
+  </style>
+</head>
+<body class="grid-bg">
+
+  <!-- Custom Cursor Elements -->
+  <div class="custom-cursor" id="customCursor"></div>
+  <div class="custom-cursor-ring" id="customCursorRing"></div>
+
+  <!-- Background open books vector graphics -->
+  <svg class="bg-book book-node-1" width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+  </svg>
+
+  <svg class="bg-book book-node-2" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+  </svg>
+
+  <svg class="bg-book book-node-3" width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+  </svg>
+
+  <svg class="bg-book book-node-4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+  </svg>
+
+  <!-- Top bar -->
+  <header class="scholastic-header">
+    <div class="header-left-brand">
+      <svg class="brand-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    </div>
+
+    <div class="header-right-brand">
+      <div>
+        <div class="school-title">Zebar School</div>
+        <span class="school-subtitle">ACADEMY LEDGER PORTAL</span>
+      </div>
+      <div class="header-logo-frame">
+        <img src="logo.png" alt="Zebar School Logo">
+      </div>
+    </div>
+  </header>
+
+  <!-- Main center block with split-grid structure -->
+  <div class="presentation-container">
+    <div class="presentation-split">
+      <div class="presentation-content">
+        <span class="editorial-caps">// Portal Gateway</span>
+        <div class="text-stroke-wrapper">
+          <h1 class="presentation-title">Academy Ledger Loop</h1>
+          <div class="paint-stroke"></div>
+        </div>
+        <p class="presentation-sub">Welcome to your standalone university routing terminal. Select an interface option below to load active query queues or dashboard metrics sheets.</p>
+        <div class="dual-gate-row">
+          <a href="student.html" class="btn-primary magnetic">Open Student Desk &rarr;</a>
+          <a href="instructor.html" class="btn-primary magnetic" style="background-color: #4A6B53; border-color: #4A6B53;">Instructor Terminal &rarr;</a>
+        </div>
+
+        <div style="margin-top: 40px; border-top: 1px solid var(--wire-tan); padding-top: 24px;">
+          <span class="editorial-caps" style="margin-bottom: 12px;">// System Registry v1.0</span>
+          <div class="dual-gate-row" style="margin-top: 10px;">
+            <a href="about_slides.html?autostart=true" class="btn-primary magnetic" style="background-color: #E5E2DA; color: #4A6B53; border-color: #4A6B53;">
+              View Presentation &rarr;
+            </a>
+            <a href="https://portfolioo.onrender.com" target="_blank" class="btn-primary magnetic" style="background-color: var(--ink-clay); color: var(--card-paper); border-color: var(--ink-clay);">
+              Meet the Architect &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upgraded 3D Volumetric Book SVG -->
+      <div class="book-3d-container magnetic" id="bookContainer">
+          <svg id="vectorBook" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                  <!-- Soft drop shadow for book -->
+                  <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                      <feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#3c352e" flood-opacity="0.25" />
+                  </filter>
+              </defs>
+              <g filter="url(#shadow)">
+                  <!-- Deep Layer: Spine and Cover -->
+                  <path class="book-part layer-deep book-spine" d="M200,80 L200,320" stroke="#2c251e" stroke-width="26" stroke-linecap="round" />
+                  <path class="book-part layer-deep book-cover-left" d="M195,84 L60,94 C54,94 48,99 48,105 L48,309 C48,315 54,320 60,320 L195,310 Z" fill="#35493b" stroke="#243329" stroke-width="2" />
+                  <path class="book-part layer-deep book-cover-right" d="M205,84 L340,94 C346,94 352,99 352,105 L352,309 C352,315 346,320 340,320 L205,310 Z" fill="#35493b" stroke="#243329" stroke-width="2" />
+                  
+                  <!-- Mid Layer: Fanned Pages Stack -->
+                  <path class="book-part layer-mid" d="M194,87 L70,97 C66,97 62,101 62,106 L62,302 C62,307 66,311 70,311 L194,301 Z" fill="#e5e2da" />
+                  <path class="book-part layer-mid" d="M194,89 L74,99 C70,99 66,103 66,108 L66,300 C66,305 70,309 74,309 L194,299 Z" fill="#f0ede5" />
+                  <path class="book-part layer-mid pages-left-active" d="M194,92 L78,102 C74,102 70,106 70,111 L70,298 C70,303 74,307 78,307 L194,297 Z" fill="#fcfaf5" stroke="#d9d2c5" stroke-width="1.5" />
+                  
+                  <path class="book-part layer-mid" d="M206,87 L330,97 C334,97 338,101 338,106 L338,302 C338,307 334,311 330,311 L206,301 Z" fill="#e5e2da" />
+                  <path class="book-part layer-mid" d="M206,89 L326,99 C330,99 334,103 334,108 L334,300 C334,305 330,309 326,309 L206,299 Z" fill="#f0ede5" />
+                  <path class="book-part layer-mid pages-right-active" d="M206,92 L322,102 C326,102 330,106 330,111 L330,298 C330,303 326,307 322,307 L206,297 Z" fill="#fcfaf5" stroke="#d9d2c5" stroke-width="1.5" />
+                  
+                  <!-- Shallow Layer: Ribbon and Content -->
+                  <path class="book-part layer-shallow bookmark-ribbon" d="M200,92 C198,160 215,220 205,335 C202,342 208,342 210,335 L215,300" fill="none" stroke="#aa6c39" stroke-width="6" stroke-linecap="round" />
+                  
+                  <g class="book-part layer-shallow page-content-left" stroke="#8c837a" stroke-width="1.5" fill="none" opacity="0.6">
+                      <line x1="90" y1="130" x2="170" y2="122" />
+                      <line x1="90" y1="150" x2="170" y2="142" />
+                      <line x1="90" y1="170" x2="170" y2="162" />
+                      <line x1="90" y1="190" x2="150" y2="182" />
+                      <rect x="90" y="210" width="30" height="40" rx="2" stroke="#4a6b53" stroke-width="1.5" />
+                      <line x1="130" y1="220" x2="170" y2="216" />
+                      <line x1="130" y1="235" x2="170" y2="231" />
+                      <line x1="130" y1="250" x2="170" y2="246" />
+                  </g>
+                  <g class="book-part layer-shallow page-content-right" stroke="#8c837a" stroke-width="1.5" fill="none" opacity="0.6">
+                      <line x1="230" y1="122" x2="310" y2="130" />
+                      <line x1="230" y1="142" x2="310" y2="150" />
+                      <line x1="230" y1="162" x2="310" y2="170" />
+                      <path d="M230,195 L310,203 M230,225 L310,233 M230,255 L310,263" stroke="#aa6c39" opacity="0.7" />
+                      <line x1="255" y1="185" x2="255" y2="275" stroke="#d9d2c5" />
+                      <line x1="285" y1="188" x2="285" y2="278" stroke="#d9d2c5" />
+                  </g>
+              </g>
+          </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local GSAP for high performance motion controls -->
+  <script src="js/gsap.min.js"></script>
+  <script>
+    // --- CUSTOM CURSOR ---
+    const cursor = document.getElementById('customCursor');
+    const cursorRing = document.getElementById('customCursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.left = `${mouseX}px`;
+      cursor.style.top = `${mouseY}px`;
+    });
+
+    function animateCursor() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      cursorRing.style.left = `${ringX}px`;
+      cursorRing.style.top = `${ringY}px`;
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // Hover scales
+    const hoverables = document.querySelectorAll('a, button, .bg-book, .magnetic');
+    hoverables.forEach((el) => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+
+    // --- MAGNETIC BUTTONS & BACKGROUND BOOKS ---
+    const magnetics = document.querySelectorAll('.magnetic, .bg-book');
+    magnetics.forEach((el) => {
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        // Background elements drag less (strength 0.25), buttons drag more (0.35)
+        const strength = el.classList.contains('bg-book') ? 0.25 : 0.35;
+        gsap.to(el, {
+          x: x * strength,
+          y: y * strength,
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+      });
+
+      el.addEventListener('mouseleave', () => {
+        gsap.to(el, {
+          x: 0,
+          y: 0,
+          duration: 0.5,
+          ease: el.classList.contains('bg-book') ? 'power2.out' : 'elastic.out(1, 0.3)'
+        });
+      });
+    });
+
+    // --- 3D BOOK VOLUMETRIC PARALLAX ---
+    const bookContainer = document.getElementById('bookContainer');
+    const layerDeep = document.querySelectorAll('.layer-deep');
+    const layerMid = document.querySelectorAll('.layer-mid');
+    const layerShallow = document.querySelectorAll('.layer-shallow');
+
+    window.addEventListener('mousemove', (e) => {
+      if (!bookContainer) return;
+      
+      const rect = bookContainer.getBoundingClientRect();
+      const bookCenterX = rect.left + rect.width / 2;
+      const bookCenterY = rect.top + rect.height / 2;
+      
+      const normX = (e.clientX - bookCenterX) / (window.innerWidth / 2);
+      const normY = (e.clientY - bookCenterY) / (window.innerHeight / 2);
+      
+      // Rotate the overall container
+      gsap.to(bookContainer, {
+        rotateY: normX * 18,
+        rotateX: -normY * 18,
+        duration: 0.7,
+        ease: 'power2.out'
+      });
+      
+      // Parallax depths
+      layerDeep.forEach(el => gsap.to(el, { x: normX * 4, y: normY * 3, duration: 0.6, ease: 'power2.out' }));
+      layerMid.forEach(el => gsap.to(el, { x: normX * 12, y: normY * 9, duration: 0.6, ease: 'power2.out' }));
+      layerShallow.forEach(el => gsap.to(el, { x: normX * 24, y: normY * 18, duration: 0.6, ease: 'power2.out' }));
+    });
+  </script>
+</body>
+</html>

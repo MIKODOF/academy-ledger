@@ -4,44 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Instructor Console - Academy Desk</title>
-  <!-- Sage Book Favicon Logo -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A6B53' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z' /><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z' /></svg>">
   <link rel="stylesheet" href="instructor.css">
 </head>
 <body>
-  <!-- Custom Cursor Elements -->
-  <div class="custom-cursor" id="customCursor"></div>
-  <div class="custom-cursor-ring" id="customCursorRing"></div>
-
   <header class="scholastic-header">
-    <div class="header-left-brand" style="display: flex; align-items: center; gap: 12px;">
-      <svg class="brand-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="brand-wrapper" style="display: flex; align-items: center; gap: 12px;">
+      <svg class="brand-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #4A6B53;">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
       </svg>
       <div class="brand-title">Instructor Console</div>
     </div>
-    
-    <div class="header-right-brand" style="display: flex; align-items: center; gap: 24px;">
-      <button id="header-logout-btn" class="action-control-btn btn-logout-active hidden magnetic">Leave Terminal ↗</button>
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div>
-          <div class="school-title">Zebar School</div>
-          <span class="school-subtitle">INSTRUCTOR PORTAL</span>
-        </div>
-        <div class="header-logo-frame">
-          <img src="logo.png" alt="Zebar School Logo">
-        </div>
-      </div>
-    </div>
+    <button id="header-logout-btn" class="action-control-btn btn-logout-active hidden">Leave Terminal ↗</button>
   </header>
 
   <div id="teacher-auth-gate" class="auth-stage-container grid-bg">
-    <!-- Floating background books -->
-    <svg class="bg-book book-node-1" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
-    <svg class="bg-book book-node-2" width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
-    <svg class="bg-book book-node-3" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
-    
     <div class="split-auth">
       <div class="auth-graphic-side">
         <div class="graphic-wrapper">
@@ -87,10 +64,6 @@
     </aside>
     
     <main class="workspace grid-bg">
-      <!-- Floating background books -->
-      <svg class="bg-book book-node-1" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
-      <svg class="bg-book book-node-2" width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
-
       <div id="tea-doubts-canvas" class="view-panel">
         <header class="workspace-header"><h1 class="section-title">Verify Pending Inquiries</h1></header>
         <div id="tea-doubts-empty" class="center-state"><h3>Select an active doubt item to open resolution text pads.</h3></div>
@@ -328,96 +301,6 @@
     };
     appendNode();
     document.getElementById('header-logout-btn').onclick = () => { sessionStorage.removeItem('active_teacher'); location.reload(); };
-  </script>
-
-  <!-- Local GSAP for high performance motion controls -->
-  <script src="js/gsap.min.js"></script>
-  <script>
-    // --- CUSTOM CURSOR ---
-    const cursor = document.getElementById('customCursor');
-    const cursorRing = document.getElementById('customCursorRing');
-    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-
-    window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursor.style.left = `${mouseX}px`;
-      cursor.style.top = `${mouseY}px`;
-    });
-
-    function animateCursor() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
-      cursorRing.style.left = `${ringX}px`;
-      cursorRing.style.top = `${ringY}px`;
-      requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    // Hover scales
-    function bindHoverHandlers() {
-      const hoverables = document.querySelectorAll('a, button, input, textarea, select, .feed-item, .nav-link, .magnetic');
-      hoverables.forEach((el) => {
-        el.removeEventListener('mouseenter', addHoverClass);
-        el.removeEventListener('mouseleave', removeHoverClass);
-        el.addEventListener('mouseenter', addHoverClass);
-        el.addEventListener('mouseleave', removeHoverClass);
-      });
-    }
-
-    function addHoverClass() { document.body.classList.add('cursor-hover'); }
-    function removeHoverClass() { document.body.classList.remove('cursor-hover'); }
-
-    // Run hover binder initially and after dynamic elements rendering
-    bindHoverHandlers();
-    
-    // Patch feed rendering functions to rebind cursor hover
-    const originalRenderDoubtsFeed = renderDoubtsFeed;
-    renderDoubtsFeed = async function() {
-      await originalRenderDoubtsFeed();
-      bindHoverHandlers();
-    };
-
-    const originalRenderGradesFeed = renderGradesFeed;
-    renderGradesFeed = async function() {
-      await originalRenderGradesFeed();
-      bindHoverHandlers();
-    };
-
-    // --- MAGNETIC BUTTONS & CONTROLS ---
-    function bindMagneticHandlers() {
-      const magnetics = document.querySelectorAll('.btn-primary, .nav-link, .action-control-btn, .btn-text');
-      magnetics.forEach((el) => {
-        el.removeEventListener('mousemove', handleMagneticMove);
-        el.removeEventListener('mouseleave', handleMagneticLeave);
-        el.addEventListener('mousemove', handleMagneticMove);
-        el.addEventListener('mouseleave', handleMagneticLeave);
-      });
-    }
-
-    function handleMagneticMove(e) {
-      const rect = this.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      
-      gsap.to(this, {
-        x: x * 0.3,
-        y: y * 0.3,
-        duration: 0.3,
-        ease: 'power2.out'
-      });
-    }
-
-    function handleMagneticLeave() {
-      gsap.to(this, {
-        x: 0,
-        y: 0,
-        duration: 0.5,
-        ease: 'elastic.out(1, 0.3)'
-      });
-    }
-
-    bindMagneticHandlers();
   </script>
 </body>
 </html>
